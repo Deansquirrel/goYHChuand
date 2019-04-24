@@ -11,6 +11,11 @@ const (
 	Version = "0.0.0 Build20190101"
 )
 
+const (
+	//数据更新时间间隔（秒）
+	DateUpdateDuration = 60 * 60
+)
+
 var Ctx context.Context
 var Cancel func()
 
