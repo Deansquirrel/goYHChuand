@@ -50,14 +50,14 @@ const (
 		"INSERT INTO [xtmdyystatus_md]([mdyyid],[mdyydate],[mdyystatus],[mdyyopenid],[mdyyopentime],[mdyycloseid],[mdyyclosetime],[mdyysjtype])" +
 		" VALUES (?,?,?,?,?,?,?,?)"
 	sqlClearMdYySate = "" +
-		"TRUNCATE TABLE [xtmdyystatus_md]"
+		"delete from [xtmdyystatus_md] where 1=1"
 )
 
 const (
-	saveDbServer = ""
-	saveDbPort   = 1433
-	saveDbDbName = ""
-	saveDbUser   = ""
+	saveDbServer = "192.168.5.1"
+	saveDbPort   = 2005
+	saveDbDbName = "goYHChand"
+	saveDbUser   = "sa"
 	saveDbPwd    = ""
 )
 
@@ -98,9 +98,9 @@ func getRowsBySQL(sql string, dbConfig *goToolMSSql.MSSqlConfig) (*sql.Rows, err
 	return rows, nil
 }
 
-func UpdateMdYyStateDate() {
-	log.Debug("start UpdateMdYyStateDate")
-	defer log.Debug("UpdateMdYyStateDate Complete")
+func UpdateMdYyStateData() {
+	log.Debug("start UpdateMdYyStateData")
+	defer log.Debug("UpdateMdYyStateData Complete")
 	conn, err := goToolMSSql.GetConn(getSaveDBConfig())
 	if err != nil {
 		log.Error(fmt.Sprintf("Get SaveDB Conn error：%s", err.Error()))
@@ -147,9 +147,9 @@ type mdYyState struct {
 	SjType    int
 }
 
-func UpdateRowsDate() {
-	log.Debug("start UpdateRowsDate")
-	defer log.Debug("UpdateRowsDate Complete")
+func UpdateRowsData() {
+	log.Debug("start UpdateRowsData")
+	defer log.Debug("UpdateRowsData Complete")
 	rcv1 := getRcv(sqlGetRev1)
 	rcv2 := getRcv(sqlGetRev2)
 	rcv3 := getRcv(sqlGetRev3)
@@ -159,6 +159,7 @@ func UpdateRowsDate() {
 
 func getRcv(sql string) int {
 	var rcv int
+	rcv = -1
 	rows, err := getRowsBySQL(sql, getSearchDBConfig())
 	if err != nil {
 		log.Error(fmt.Sprintf("Get Rcv Error: %s", err.Error()))

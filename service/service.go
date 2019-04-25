@@ -4,26 +4,25 @@ import (
 	log "github.com/Deansquirrel/goToolLog"
 	"github.com/Deansquirrel/goYHChuand/global"
 	"github.com/Deansquirrel/goYHChuand/worker"
-	"time"
+	"github.com/robfig/cron"
 )
 
 //启动服务内容
 func StartService() error {
 	log.Debug("StartService")
-	go startUpdateRowsDate()
-	time.Sleep(time.Second * 15)
-	go startUpdateMdYyStateDate()
-	return nil
-}
+	var err error
+	c := cron.New()
+	err = c.AddFunc(global.SysConfig.Task.RowDataUpdateCron, worker.UpdateRowsData)
 
-func startUpdateRowsDate() {
-	for {
-		worker.UpdateRowsDate()
-		time.Sleep(time.Second * global.DateUpdateDuration)
+	if err != nil {
+		return err
 	}
-}
 
-func startUpdateMdYyStateDate() {
-	worker.UpdateMdYyStateDate()
-	time.Sleep(time.Second * global.DateUpdateDuration)
+	err = c.AddFunc(global.SysConfig.Task.YyStateUpdateCron, worker.UpdateMdYyStateData)
+
+	if err != nil {
+		return err
+	}
+	c.Start()
+	return nil
 }
